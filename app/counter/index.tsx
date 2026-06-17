@@ -6,9 +6,6 @@ export default function CounterScreen() {
     const router = useRouter()
   return (
       <View style={styles.container}>
-          <TouchableOpacity onPress={()=>{router.push('/idea')}}>
-            <Text style={{fontSize: 24, marginBottom:18, textAlign: "center"}}> Go to /idea</Text>
-          </TouchableOpacity>
       <Text style={styles.text}>Counter</Text>
     </View>
   );
