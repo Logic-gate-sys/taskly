@@ -1,20 +1,23 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native'
+import { theme } from './theme'
+import { ShoppingListItem } from './components/shoppinglist-item'
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
+          <ShoppingListItem name='Coffee' />
+          <ShoppingListItem name='Banana' />
+          <ShoppingListItem name='Carrot' />
+           <ShoppingListItem name='Tea' />
+          
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'center',
     justifyContent: 'center',
-  },
-});
+  }
+})
