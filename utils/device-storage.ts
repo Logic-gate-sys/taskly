@@ -11,7 +11,7 @@ export async function getFromStorage(key: string) {
 }
 
 
-export async function setToStorage(key: string, item: object[]) {
+export async function setToStorage(key: string, item: object) {
     try {
         await AsyncStorage.setItem(key, JSON.stringify(item))
         console.log("Saved to storage successful")
