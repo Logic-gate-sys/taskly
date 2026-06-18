@@ -1,18 +1,19 @@
 import { StyleSheet, TextInput, View, FlatList, Text } from 'react-native'
 import { theme } from '../theme'
 import { ShoppingListItem } from '../components/shoppinglist-item'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { type ShoppingListItemType } from '../types'
+import { getFromStorage, setToStorage } from '../utils/device-storage'
 const initialList: ShoppingListItemType[] = [
   { id: '1', name: 'Coffee' },
   { id: '2', name: 'Olive Oil', isCompleted: true },
   { id: '3', name: 'Banana' },
 ]
 
+const storage_key: string = 'list-index-key'
 export default function App() {
   const [shoppinglist, setShoppingList] = useState<ShoppingListItemType[]>([])
   const [value, setValue] = useState<string>()
-
   const orderList = (list: ShoppingListItemType[]) => {
     return list.sort((itm1, itm2) => {
       if (itm1.completedAt && itm2.completedAt) {
@@ -37,6 +38,8 @@ export default function App() {
           completedAt: itm.completedAt ? undefined : Date.now(),
           lastUpdated: Date.now(),
         }
+        // set new list to storage
+        setToStorage(storage_key, newList)
       } else {
         return itm
       }
@@ -57,12 +60,27 @@ export default function App() {
       // --- set new value --
       setShoppingList(newList)
       setValue(undefined)
+      // set new list to storage
+      setToStorage(storage_key, newList)
     }
   }
   const handleDelete = (id: string) => {
-    const newList = shoppinglist.filter((itm) => itm.id !== id)
+  const newList = shoppinglist.filter((itm) => itm.id !== id)
     setShoppingList(newList)
+    // set new list to storage
+    setToStorage(storage_key, newList)
   }
+
+  useEffect(() => {
+    const fetchAll = async () => {
+      const jsonDate = await getFromStorage(storage_key)
+      if (jsonDate) {
+        setShoppingList(jsonDate)
+      }
+    }
+    fetchAll()
+  }, [])
+
   return (
     <FlatList
       ListHeaderComponent={
