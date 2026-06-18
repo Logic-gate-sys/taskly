@@ -1,13 +1,21 @@
-import { TouchableOpacity, View, Alert, StyleSheet, Text } from 'react-native'
+import {
+  TouchableOpacity,
+  View,
+  Alert,
+  StyleSheet,
+  Text,
+  Pressable,
+} from 'react-native'
 import { theme } from '../theme'
 import Entypo from '@expo/vector-icons/Entypo'
+import { type ShoppingListItemType } from '../types'
 
-type Props = {
-  name: string
-  isCompleted?: boolean
-}
-
-export function ShoppingListItem({ name, isCompleted }: Props) {
+export function ShoppingListItem({
+  name,
+  isCompleted,
+  onDelete,
+  onToggleComplete,
+}: ShoppingListItemType) {
   const handleDelete = () => {
     Alert.alert(
       `Are you sure you want to delete ${name}?`,
@@ -15,7 +23,7 @@ export function ShoppingListItem({ name, isCompleted }: Props) {
       [
         {
           text: 'Yes',
-          onPress: () => console.log('Ok, deleting.'),
+          onPress: () => onDelete(),
           style: 'destructive',
         },
         { text: 'Cancel', style: 'cancel' },
@@ -24,7 +32,13 @@ export function ShoppingListItem({ name, isCompleted }: Props) {
   }
 
   return (
-    <View style={styles.itemContainer}>
+    <Pressable
+      style={[
+        styles.itemContainer,
+        isCompleted ? styles.completedContainer : undefined,
+      ]}
+      onPress={onToggleComplete}
+    >
       <Text style={[styles.itemText, isCompleted && styles.completedText]}>
         {name}
       </Text>
@@ -40,7 +54,7 @@ export function ShoppingListItem({ name, isCompleted }: Props) {
           color={isCompleted ? theme.colorGrey : theme.colorRed}
         />
       </TouchableOpacity>
-    </View>
+    </Pressable>
   )
 }
 
@@ -53,7 +67,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#fff',
+    backgroundColor: theme.colorLightGrey,
+  },
+  completedContainer: {
+    paddingVertical: 16,
+    paddingHorizontal: 16,
+    borderBottomColor: theme.colorCerulean,
+    borderBottomWidth: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#f9fafb', // Slightly darker/muted background for completed items
+    opacity: 0.7, // Mutes the entire row slightly,
   },
   itemText: {
     fontSize: 16,
