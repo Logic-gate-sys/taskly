@@ -1,9 +1,17 @@
-import { StyleSheet, TextInput, View, FlatList, Text } from 'react-native'
+import {
+  StyleSheet,
+  TextInput,
+  View,
+  FlatList,
+  Text,
+  LayoutAnimation,
+} from 'react-native'
 import { theme } from '../theme'
 import { ShoppingListItem } from '../components/shoppinglist-item'
 import { useEffect, useState } from 'react'
 import { type ShoppingListItemType } from '../types'
 import { getFromStorage, setToStorage } from '../utils/device-storage'
+import * as Haptics from 'expo-haptics'
 const initialList: ShoppingListItemType[] = [
   { id: '1', name: 'Coffee' },
   { id: '2', name: 'Olive Oil', isCompleted: true },
@@ -32,6 +40,11 @@ export default function App() {
   const handleToggleComplete = (id: string) => {
     const newList = shoppinglist.map((itm: ShoppingListItemType, _) => {
       if (itm.id === id) {
+        if (itm.completedAt) {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+        } else {
+          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
+        }
         return {
           ...itm,
           isCompleted: itm.isCompleted ? false : true,
@@ -39,6 +52,7 @@ export default function App() {
           lastUpdated: Date.now(),
         }
         // set new list to storage
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
         setToStorage(storage_key, newList)
       } else {
         return itm
@@ -46,6 +60,7 @@ export default function App() {
     })
     // set shopping list
     setShoppingList(newList)
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
   }
   const handleSubmit = () => {
     if (value) {
@@ -59,13 +74,16 @@ export default function App() {
       ]
       // --- set new value --
       setShoppingList(newList)
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
       setValue(undefined)
       // set new list to storage
       setToStorage(storage_key, newList)
     }
   }
   const handleDelete = (id: string) => {
-  const newList = shoppinglist.filter((itm) => itm.id !== id)
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+    const newList = shoppinglist.filter((itm) => itm.id !== id)
     setShoppingList(newList)
     // set new list to storage
     setToStorage(storage_key, newList)
@@ -75,6 +93,7 @@ export default function App() {
     const fetchAll = async () => {
       const jsonDate = await getFromStorage(storage_key)
       if (jsonDate) {
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
         setShoppingList(jsonDate)
       }
     }

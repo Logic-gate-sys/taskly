@@ -9,6 +9,7 @@ import {
 import { theme } from '../theme'
 import Entypo from '@expo/vector-icons/Entypo'
 import { type ShoppingListItemType } from '../types'
+import * as Haptics from 'expo-haptics'
 
 export function ShoppingListItem({
   name,
@@ -17,6 +18,7 @@ export function ShoppingListItem({
   onToggleComplete,
 }: ShoppingListItemType) {
   const handleDelete = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy)
     Alert.alert(
       `Are you sure you want to delete ${name}?`,
       'It will be gone for good',
